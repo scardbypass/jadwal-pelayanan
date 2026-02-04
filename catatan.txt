@@ -161,7 +161,9 @@ Permission standar:
 Folder: 755
 File  : 644
 
-
+wajib bikin folder ( minggu 1-5)
+buat simpan gambar uploads
+/minggu1/ ( contoh )
 --------------------------------------------------
 CHECKLIST FINAL
 --------------------------------------------------
@@ -179,3 +181,4 @@ CHECKLIST FINAL
 ==================================================
 SELESAI
 ==================================================
+
