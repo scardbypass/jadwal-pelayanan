@@ -1,0 +1,181 @@
+==================================================
+TUTORIAL UPLOAD WEBSITE + KONEK DATABASE (cPanel)
+==================================================
+
+Panduan ini menjelaskan:
+- Upload file website ke hosting
+- Membuat database MySQL
+- Import database (.sql)
+- Setting koneksi database di db.php
+- Mengecek website
+- Mengatasi error umum
+
+
+--------------------------------------------------
+1. UPLOAD WEBSITE KE HOSTING
+--------------------------------------------------
+
+1) Login ke cPanel.
+2) Klik menu: File Manager.
+3) Masuk ke folder utama:
+   public_html
+
+4) Upload file website:
+   - Jika ZIP: Upload -> pilih file -> kembali -> klik kanan -> Extract.
+   - Jika folder: upload semua isi project.
+
+5) Pastikan ada file utama:
+   - index.php
+   - atau index.html
+
+Catatan:
+Jika website ada di:
+public_html/projectku/
+
+Maka diakses lewat:
+https://domain.com/projectku
+
+
+--------------------------------------------------
+2. MEMBUAT DATABASE MYSQL
+--------------------------------------------------
+
+Di halaman cPanel, klik:
+MySQL® Databases
+
+A. Membuat Database
+- Isi nama database, contoh: webku
+- Hosting biasanya menambahkan prefix:
+  akunhosting_webku
+
+B. Membuat User Database
+- Username: userweb
+- Password: buat password kuat dan simpan.
+
+Hasil biasanya:
+akunhosting_userweb
+
+C. Hubungkan User ke Database
+- Scroll ke bagian "Add User to Database".
+- Pilih user + database.
+- Klik Add.
+- Centang: ALL PRIVILEGES.
+- Save.
+
+
+--------------------------------------------------
+3. IMPORT DATABASE (.SQL)
+--------------------------------------------------
+
+Jika ada file database:
+
+1) Masuk phpMyAdmin.
+2) Klik database: akunhosting_webku
+3) Klik tab Import.
+4) Upload file .sql.
+5) Klik Go.
+
+Jika berhasil, tabel database akan muncul.
+
+
+--------------------------------------------------
+4. SETTING KONEKSI DATABASE (db.php)
+--------------------------------------------------
+
+Cari file:
+- db.php
+- config.php
+- koneksi.php
+
+Isi dengan format berikut:
+
+----------------------------------
+<?php
+
+$host = "localhost";
+$user = "akunhosting_userweb";
+$pass = "PASSWORD_DB";
+$db   = "akunhosting_webku";
+
+$conn = mysqli_connect($host, $user, $pass, $db);
+
+if (!$conn) {
+    die("Koneksi database gagal: " . mysqli_connect_error());
+}
+
+?>
+----------------------------------
+
+Catatan Penting:
+- Host hampir selalu: localhost
+- Username & database wajib pakai prefix akun hosting.
+- Jangan pakai user: root di hosting.
+
+
+--------------------------------------------------
+5. CEK WEBSITE
+--------------------------------------------------
+
+Buka browser dan akses:
+
+https://domainmu.com
+
+Jika halaman muncul, berarti sukses.
+
+
+--------------------------------------------------
+6. MASALAH YANG SERING TERJADI
+--------------------------------------------------
+
+ERROR: Access denied for user
+Penyebab:
+- Username salah
+- Password salah
+- Database salah
+- User belum punya akses
+
+Solusi:
+- Cek di MySQL Databases.
+- Pastikan user terhubung ke database.
+- ALL PRIVILEGES dicentang.
+
+
+ERROR: Unknown database
+- Nama database salah atau belum dibuat.
+
+
+HALAMAN PUTIH / BLANK
+Tambahkan sementara di index.php:
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+
+ERROR 500
+Biasanya karena:
+- Versi PHP tidak cocok
+- File .htaccess bermasalah
+- Permission salah
+
+Permission standar:
+Folder: 755
+File  : 644
+
+
+--------------------------------------------------
+CHECKLIST FINAL
+--------------------------------------------------
+
+[ ] File sudah di public_html
+[ ] index.php ada
+[ ] Database dibuat
+[ ] User database dibuat
+[ ] User terhubung ke database
+[ ] SQL sudah di-import
+[ ] db.php benar
+[ ] Prefix hosting sesuai
+[ ] Website bisa dibuka
+
+==================================================
+SELESAI
+==================================================
