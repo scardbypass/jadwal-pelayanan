@@ -160,6 +160,50 @@ h1{
  border:1px solid rgba(255,255,255,.45)
 }
 
+/* VIDEO POPUP */
+.video-overlay{
+ position:fixed;
+ inset:0;
+ display:none;
+ justify-content:center;
+ align-items:flex-start;
+ padding-top:90px;
+ background:transparent;
+ z-index:9999;
+ pointer-events:none;
+}
+
+.video-box{
+ width:92%;
+ max-width:860px;
+ aspect-ratio:16/9;
+ background:black;
+ border-radius:22px;
+ overflow:hidden;
+ box-shadow:0 40px 80px rgba(0,0,0,.7);
+ pointer-events:auto;
+ position:relative;
+}
+
+.video-box iframe{
+ width:100%;
+ height:100%;
+ border:0;
+}
+
+.closeBtn{
+ position:absolute;
+ right:12px;
+ bottom:12px;
+ padding:6px 18px;
+ border-radius:14px;
+ background:rgba(0,0,0,.65);
+ color:white;
+ border:1px solid rgba(255,255,255,.3);
+ cursor:pointer;
+ font-weight:700;
+}
+
 /* MODAL */
 .modal-bg{
  position:fixed;inset:0;
@@ -233,11 +277,11 @@ foreach($mRoles as $r){
  <span><?=htmlspecialchars($s['title'])?></span>
  <div class="song-actions">
 
-  <?php if($s['youtube']): ?>
-   <a class="iconBtn yt" target="_blank"
-    title="YouTube"
-    href="<?=htmlspecialchars($s['youtube'])?>">🎥</a>
-  <?php endif ?>
+<?php if($s['youtube']): ?>
+ <button class="iconBtn yt"
+  title="Play"
+  onclick="playYT('<?=htmlspecialchars($s['youtube'])?>')">🎥</button>
+<?php endif ?>
 
   <?php if($s['sequencer']): ?>
    <a class="iconBtn seq" target="_blank"
@@ -281,6 +325,17 @@ foreach($mRoles as $r){
  </div>
 </div>
 
+<!-- VIDEO POPUP -->
+<div class="video-overlay" id="videoPop">
+ <div class="video-box">
+  <iframe id="ytFrame"
+   allow="autoplay; encrypted-media"
+   allowfullscreen></iframe>
+
+  <button class="closeBtn" onclick="closeYT()">Close</button>
+ </div>
+</div>
+
 <script>
 function openModal(t,x){
  modalTitle.innerText=t;
@@ -293,6 +348,26 @@ function closeModal(){
 function copyLyrics(){
  navigator.clipboard.writeText(modalText.innerText);
  alert("Lirik dicopy 👍");
+}
+
+function ytID(url){
+ const m=url.match(/(youtu.be\/|v=)([^&]+)/);
+ return m?m[2]:null;
+}
+
+function playYT(url){
+ const id=ytID(url);
+
+ ytFrame.src=
+  "https://www.youtube.com/embed/"+id+
+  "?autoplay=1&rel=0&modestbranding=1";
+
+ videoPop.style.display="flex";
+}
+
+function closeYT(){
+ ytFrame.src="";
+ videoPop.style.display="none";
 }
 </script>
 
