@@ -11,6 +11,7 @@
  --bg2:#0b1f3f;
  --glass:rgba(255,255,255,.18);
  --border:rgba(255,255,255,.35);
+ --accent:#6cf7ff;
  --danger:#ff6b6b;
 }
 
@@ -28,10 +29,16 @@ body{
  linear-gradient(160deg,var(--bg1),var(--bg2));
 }
 
-h1{text-align:center;font-size:clamp(2rem,4vw,3rem);
+h1{
+ text-align:center;
+ font-size:clamp(2rem,4vw,3rem);
+ font-weight:900;
  background:linear-gradient(90deg,#6cf7ff,#b99cff);
- -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+}
 
+/* WEEK */
 .weekGrid{
  display:grid;
  grid-template-columns:repeat(3,1fr);
@@ -39,24 +46,40 @@ h1{text-align:center;font-size:clamp(2rem,4vw,3rem);
  justify-items:center;
  margin:26px 0;
 }
-.weekGrid .center{grid-column:span 3;display:flex;gap:14px}
+.weekGrid .center{
+ grid-column:span 3;
+ display:flex;
+ justify-content:center;
+ gap:14px;
+}
 
 .weekBtn{
- width:130px;padding:9px;border-radius:999px;
- border:1px solid var(--border);background:var(--glass);
- color:white;font-weight:800;cursor:pointer;
+ width:130px;
+ padding:9px;
+ border-radius:999px;
+ border:1px solid var(--border);
+ background:var(--glass);
+ color:white;
+ font-weight:800;
+ cursor:pointer;
+ transition:.25s;
 }
+
+.weekBtn:hover{transform:scale(1.05)}
+
 .weekBtn.active{
  background:linear-gradient(135deg,#6cf7ff99,#a38cff99);
  box-shadow:0 0 22px #6cf7ffaa;
 }
 
+/* GRID */
 .mainGrid{
  display:grid;
  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
  gap:22px;
 }
 
+/* CARD */
 .card{
  background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.05));
  border:1px solid var(--border);
@@ -66,57 +89,105 @@ h1{text-align:center;font-size:clamp(2rem,4vw,3rem);
  box-shadow:0 30px 70px rgba(0,0,0,.6);
 }
 
-.sectionTitle{font-weight:900;margin:14px 0 8px;color:#9feaff}
-.row{display:flex;gap:10px;flex-wrap:wrap}
+.row{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:14px;
+}
 
+/* BUTTON */
 button{
  background:linear-gradient(135deg,#6cf7ff66,#a38cff66);
  border:1px solid var(--border);
  border-radius:999px;
  padding:8px 18px;
- color:white;font-weight:800;cursor:pointer;
+ color:white;
+ font-weight:800;
+ cursor:pointer;
+ transition:.2s;
 }
 
-.btnDanger{background:linear-gradient(135deg,#ff8b8b,#ff4d4d)}
+button:hover{transform:scale(1.05)}
 
+.btnDanger{
+ background:linear-gradient(135deg,#ff8b8b,#ff4d4d);
+}
+
+/* FORM */
 input,textarea,select{
- width:100%;padding:9px 12px;border-radius:16px;
- border:1px solid var(--border);background:rgba(0,0,0,.35);
+ width:100%;
+ padding:12px;
+ border-radius:16px;
+ border:1px solid var(--border);
+ background:rgba(0,0,0,.35);
  color:white;
 }
 
+/* SONG */
 .songItem{
  background:rgba(255,255,255,.15);
- padding:10px 14px;border-radius:18px;
+ padding:10px 14px;
+ border-radius:18px;
  border:1px solid var(--border);
- display:flex;justify-content:space-between;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
  margin-top:8px;
 }
 
+/* OUTFIT */
 .outfitGrid{
- display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
  gap:12px;
 }
-.outfitCard{position:relative;border-radius:20px;overflow:hidden}
-.outfitCard img{width:100%;height:150px;object-fit:cover}
-.outfitCard button{position:absolute;top:6px;right:6px}
+.outfitCard{
+ position:relative;
+ border-radius:20px;
+ overflow:hidden;
+}
+.outfitCard img{
+ width:100%;
+ height:150px;
+ object-fit:cover;
+}
+.outfitCard button{
+ position:absolute;
+ top:6px;
+ right:6px;
+}
 
+/* PROGRESS */
 .progressBar{
- height:12px;background:rgba(255,255,255,.25);
- border-radius:999px;overflow:hidden;margin-top:8px
+ height:12px;
+ background:rgba(255,255,255,.25);
+ border-radius:999px;
+ overflow:hidden;
+ margin-top:8px;
 }
 .progressFill{
- height:100%;width:0%;
- background:linear-gradient(90deg,#6cf7ff,#a38cff)
+ height:100%;
+ width:0%;
+ background:linear-gradient(90deg,#6cf7ff,#a38cff);
+ transition:.2s;
 }
 
+/* MODAL */
 .modal{
- position:fixed;inset:0;background:rgba(0,0,0,.6);
- display:none;align-items:center;justify-content:center;z-index:999
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.6);
+ display:none;
+ align-items:center;
+ justify-content:center;
+ z-index:999;
 }
 .modalBox{
  background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.05));
- border-radius:26px;padding:18px;width:95%;max-width:440px
+ border-radius:26px;
+ padding:18px;
+ width:95%;
+ max-width:440px;
 }
 </style>
 </head>
@@ -176,7 +247,26 @@ input,textarea,select{
 <button onclick="uploadOutfit()">⬆ Upload</button>
 
 <div id="progressWrap"></div>
+
 <div id="outfitGrid" class="outfitGrid"></div>
+</div>
+
+<!-- JADWAL LATIHAN -->
+<div class="card">
+<h3>📅 Jadwal Latihan</h3>
+
+<div class="row">
+<select id="latHari"></select>
+<select id="latJam"></select>
+</div>
+
+<br>
+
+<button onclick="saveLatihan()">💾 Simpan & Aktifkan</button>
+
+<hr>
+
+<div id="latihanList"></div>
 </div>
 
 <!-- PREVIEW -->
@@ -187,7 +277,7 @@ input,textarea,select{
 
 </div>
 
-<!-- ASSIGN MODAL -->
+<!-- MODAL ASSIGN -->
 <div class="modal" id="assignModal">
  <div class="modalBox">
   <h3 id="assignTitle"></h3>
@@ -211,7 +301,7 @@ let currentRole="";
 
 const api=(u,opt={})=>fetch(u,opt).then(r=>r.json());
 
-/* WEEK */
+/* WEEK BUTTON */
 weekGrid.innerHTML=
  weeks.slice(0,3).map(w=>`<button class="weekBtn" data-w="${w}">Minggu ${w}</button>`).join("")+
  `<div class="center">`+
@@ -228,7 +318,7 @@ document.querySelectorAll(".weekBtn").forEach(b=>{
 });
 document.querySelector(".weekBtn").click();
 
-/* ========== KELOLA NAMA ========= */
+/* ================= NAMES ================= */
 async function loadNames(){
  const d=divisionSelect.value;
  const data=await api(`people.php?division=${d}`);
@@ -250,14 +340,7 @@ async function addPerson(){
  loadNames();
 }
 
-async function deletePerson(id){
- if(!confirm("Yakin hapus nama ini?")) return;
-
- await fetch(`people.php?id=${id}`,{method:"DELETE"});
- loadNames();
-}
-
-/* ========== ASSIGN ========= */
+/* ================= ASSIGN ================= */
 async function renderAssign(){
  const data=await api(`assign.php?week=${currentWeek}`);
 
@@ -312,7 +395,7 @@ async function saveAssign(){
  renderPreview();
 }
 
-/* ========== SONG ========= */
+/* ================= SONG ================= */
 async function loadSongs(){
  const songs=await api(`songs.php?week=${currentWeek}`);
 
@@ -339,7 +422,7 @@ async function saveSong(){
  loadSongs();
 }
 
-/* ========== OUTFIT ========= */
+/* ================= OUTFIT ================= */
 async function loadOutfits(){
  const data=await api(`outfits.php?week=${currentWeek}`);
 
@@ -351,6 +434,7 @@ async function loadOutfits(){
 }
 
 async function uploadOutfit(){
+
  const files=[...fileInput.files];
  if(!files.length) return alert("Pilih gambar");
 
@@ -381,12 +465,11 @@ async function uploadOutfit(){
 }
 
 async function deleteOutfit(id){
- if(!confirm("Hapus outfit ini?")) return;
  await fetch(`outfits.php?id=${id}`,{method:"DELETE"});
  loadOutfits();
 }
 
-/* ========== PREVIEW ========= */
+/* ================= PREVIEW ================= */
 async function renderPreview(){
  const a=await api(`assign.php?week=${currentWeek}`);
  const s=await api(`songs.php?week=${currentWeek}`);
@@ -399,6 +482,77 @@ async function renderPreview(){
   o.map(x=>`<img width=60 src="uploads/minggu${currentWeek}/${x.filename}">`).join("");
 }
 
+/* ========= JADWAL LATIHAN ========= */
+
+async function saveLatihan(){
+
+ if(!latHari.value || !latJam.value)
+  return alert("Pilih hari & jam");
+
+ const res = await fetch("latihan.php",{
+  method:"POST",
+  headers:{
+   "Content-Type":"application/json"
+  },
+  body:JSON.stringify({
+   hari:latHari.value,
+   jam:latJam.value
+  })
+ });
+
+ const out = await res.json();
+ console.log(out);
+
+ if(out.error){
+  alert("ERROR: "+out.error);
+ }else{
+  loadLatihan();
+ }
+}
+
+async function loadLatihan(){
+
+ // ================= DEFAULT SELECT =================
+ const hariArr = [
+  "Senin","Selasa","Rabu",
+  "Kamis","Jumat","Sabtu","Minggu"
+ ];
+
+ const jamArr = [
+  "17.00","18.00","19.00","20.00","21.00"
+ ];
+
+ latHari.innerHTML =
+  `<option value="">Hari</option>` +
+  hariArr.map(h=>`<option value="${h}">${h}</option>`).join("");
+
+ latJam.innerHTML =
+  `<option value="">Jam</option>` +
+  jamArr.map(j=>`<option value="${j}">${j}</option>`).join("");
+
+ // ================= LOAD DATABASE =================
+ try{
+
+  const data = await api("latihan.php");
+
+  latihanList.innerHTML = data.map(r=>`
+   <div class="row">
+    ${r.hari} — ${r.jam}
+    <b style="color:${r.aktif?'#6cff9c':'#aaa'}">
+     ${r.aktif?'AKTIF':''}
+    </b>
+   </div>
+  `).join("");
+
+ }catch(err){
+
+  console.error("LATIHAN ERROR:", err);
+
+  latihanList.innerHTML =
+   `<small style="opacity:.6">Belum ada data latihan</small>`;
+ }
+}
+
 /* LOAD */
 async function loadAll(){
  await loadNames();
@@ -406,6 +560,7 @@ async function loadAll(){
  await loadSongs();
  await loadOutfits();
  await renderPreview();
+ await loadLatihan();
 }
 </script>
 
