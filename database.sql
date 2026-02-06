@@ -22,6 +22,13 @@ CREATE TABLE songs(
  ordering INT
 );
 
+CREATE TABLE latihan (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ hari VARCHAR(20),
+ jam VARCHAR(10),
+ aktif TINYINT(1) DEFAULT 0
+);
+
 CREATE TABLE outfits(
  id INT AUTO_INCREMENT PRIMARY KEY,
  week INT,
