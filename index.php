@@ -21,7 +21,7 @@ $qLat=$conn->query("
 ");
 
 while($r=$qLat->fetch_assoc()){
- $latihanTxt[]="Latihan setiap hari {$r['hari']}, pukul {$r['jam']} WIB";
+ $latihanTxt[]="Latihan hari {$r['hari']}, pukul {$r['jam']} WIB";
 }
 
 $bulan=$bulanMap[date("n")];
