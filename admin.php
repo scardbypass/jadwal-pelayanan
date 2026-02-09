@@ -301,7 +301,8 @@ let currentRole="";
 
 const api=(u,opt={})=>fetch(u,opt).then(r=>r.json());
 
-/* WEEK BUTTON */
+/* ================= WEEK ================= */
+
 weekGrid.innerHTML=
  weeks.slice(0,3).map(w=>`<button class="weekBtn" data-w="${w}">Minggu ${w}</button>`).join("")+
  `<div class="center">`+
@@ -319,6 +320,7 @@ document.querySelectorAll(".weekBtn").forEach(b=>{
 document.querySelector(".weekBtn").click();
 
 /* ================= NAMES ================= */
+
 async function loadNames(){
  const d=divisionSelect.value;
  const data=await api(`people.php?division=${d}`);
@@ -329,19 +331,32 @@ async function loadNames(){
    <button class="btnDanger" onclick="deletePerson(${p.id})">✖</button>
   </div>`).join("");
 }
+
 divisionSelect.onchange=loadNames;
 
-async function addPerson(){
- await api("people.php",{
-  method:"POST",
-  body:JSON.stringify({name:newName.value,division:divisionSelect.value})
+async function deletePerson(id){
+
+ if(!confirm("Hapus nama ini?")) return;
+
+ const res = await fetch("people.php?id="+id,{
+  method:"DELETE"
  });
- newName.value="";
+
+ const out = await res.json();
+ console.log("DELETE PERSON:", out);
+
+ if(out.error){
+  alert(out.error);
+  return;
+ }
+
  loadNames();
 }
 
 /* ================= ASSIGN ================= */
+
 async function renderAssign(){
+
  const data=await api(`assign.php?week=${currentWeek}`);
 
  const map={};
@@ -351,6 +366,7 @@ async function renderAssign(){
  });
 
  assignGroups.innerHTML="";
+
  for(const g in roles){
   assignGroups.innerHTML+=`<div class="sectionTitle">${g}</div>`;
   roles[g].forEach(r=>{
@@ -364,13 +380,17 @@ async function renderAssign(){
 }
 
 async function openAssign(role){
+
  currentRole=role;
+
  const group=Object.keys(roles).find(k=>roles[k].includes(role));
 
  const people=await api(`people.php?division=${group}`);
  const assigns=await api(`assign.php?week=${currentWeek}`);
 
- const selected=assigns.filter(a=>a.role===role).map(a=>a.name);
+ const selected=assigns
+  .filter(a=>a.role===role)
+  .map(a=>a.name);
 
  peopleSelect.innerHTML=people.map(p=>
   `<option value="${p.id}" ${selected.includes(p.name)?"selected":""}>${p.name}</option>`
@@ -380,15 +400,31 @@ async function openAssign(role){
  assignModal.style.display="flex";
 }
 
-function closeAssign(){assignModal.style.display="none";}
+function closeAssign(){
+ assignModal.style.display="none";
+}
 
 async function saveAssign(){
+
  const ids=[...peopleSelect.selectedOptions].map(o=>o.value);
 
- await api("assign.php",{
+ const res=await fetch("assign.php",{
   method:"POST",
-  body:JSON.stringify({week:currentWeek,role:currentRole,personIds:ids})
+  headers:{ "Content-Type":"application/json" },
+  body:JSON.stringify({
+   week:currentWeek,
+   role:currentRole,
+   personIds:ids
+  })
  });
+
+ const out=await res.json();
+ console.log("ASSIGN:",out);
+
+ if(out.error){
+  alert(out.error);
+  return;
+ }
 
  closeAssign();
  renderAssign();
@@ -396,7 +432,9 @@ async function saveAssign(){
 }
 
 /* ================= SONG ================= */
+
 async function loadSongs(){
+
  const songs=await api(`songs.php?week=${currentWeek}`);
 
  songList.innerHTML=songs.map(s=>`
@@ -407,8 +445,10 @@ async function loadSongs(){
 }
 
 async function saveSong(){
- await api("songs.php",{
+
+ const res=await fetch("songs.php",{
   method:"POST",
+  headers:{ "Content-Type":"application/json" },
   body:JSON.stringify({
    week:currentWeek,
    title:songTitle.value,
@@ -418,12 +458,40 @@ async function saveSong(){
   })
  });
 
- songTitle.value=songYT.value=songSeq.value=songLyrics.value="";
+ const out=await res.json();
+ console.log("SONG:",out);
+
+ if(out.error){
+  alert(out.error);
+  return;
+ }
+
+ songTitle.value="";
+ songYT.value="";
+ songSeq.value="";
+ songLyrics.value="";
+
+ loadSongs();
+}
+
+async function deleteSong(id){
+
+ if(!confirm("Hapus lagu ini?")) return;
+
+ const res=await fetch("songs.php?id="+id,{
+  method:"DELETE"
+ });
+
+ const out=await res.json();
+ console.log("DELETE SONG:",out);
+
  loadSongs();
 }
 
 /* ================= OUTFIT ================= */
+
 async function loadOutfits(){
+
  const data=await api(`outfits.php?week=${currentWeek}`);
 
  outfitGrid.innerHTML=data.map(o=>`
@@ -433,44 +501,21 @@ async function loadOutfits(){
   </div>`).join("");
 }
 
-async function uploadOutfit(){
-
- const files=[...fileInput.files];
- if(!files.length) return alert("Pilih gambar");
-
- const fd=new FormData();
- fd.append("week",currentWeek);
- files.forEach(f=>fd.append("files[]",f));
-
- progressWrap.innerHTML=
- `<div class="progressBar"><div id="pFill" class="progressFill"></div></div>`;
-
- const xhr=new XMLHttpRequest();
-
- xhr.upload.onprogress=e=>{
-  if(e.lengthComputable){
-   document.getElementById("pFill").style.width=
-    Math.round(e.loaded/e.total*100)+"%";
-  }
- };
-
- xhr.onload=()=>{
-  loadOutfits();
-  progressWrap.innerHTML="";
-  fileInput.value="";
- };
-
- xhr.open("POST","outfits.php");
- xhr.send(fd);
-}
-
 async function deleteOutfit(id){
- await fetch(`outfits.php?id=${id}`,{method:"DELETE"});
+
+ if(!confirm("Hapus outfit ini?")) return;
+
+ await fetch("outfits.php?id="+id,{
+  method:"DELETE"
+ });
+
  loadOutfits();
 }
 
 /* ================= PREVIEW ================= */
+
 async function renderPreview(){
+
  const a=await api(`assign.php?week=${currentWeek}`);
  const s=await api(`songs.php?week=${currentWeek}`);
  const o=await api(`outfits.php?week=${currentWeek}`);
@@ -482,60 +527,53 @@ async function renderPreview(){
   o.map(x=>`<img width=60 src="uploads/minggu${currentWeek}/${x.filename}">`).join("");
 }
 
-/* ========= JADWAL LATIHAN ========= */
+/* ================= LATIHAN ================= */
 
 async function saveLatihan(){
 
- if(!latHari.value || !latJam.value)
-  return alert("Pilih hari & jam");
+ if(!latHari.value || !latJam.value){
+  alert("Pilih hari & jam");
+  return;
+ }
 
- const res = await fetch("latihan.php",{
+ const res=await fetch("latihan.php",{
   method:"POST",
-  headers:{
-   "Content-Type":"application/json"
-  },
+  headers:{ "Content-Type":"application/json" },
   body:JSON.stringify({
    hari:latHari.value,
    jam:latJam.value
   })
  });
 
- const out = await res.json();
- console.log(out);
+ const out=await res.json();
+ console.log("LATIHAN:",out);
 
  if(out.error){
-  alert("ERROR: "+out.error);
- }else{
-  loadLatihan();
+  alert(out.error);
+  return;
  }
+
+ loadLatihan();
 }
 
 async function loadLatihan(){
 
- // ================= DEFAULT SELECT =================
- const hariArr = [
-  "Senin","Selasa","Rabu",
-  "Kamis","Jumat","Sabtu","Minggu"
- ];
+ const hariArr=["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"];
+ const jamArr=["17.00","18.00","19.00","20.00","21.00"];
 
- const jamArr = [
-  "17.00","18.00","19.00","20.00","21.00"
- ];
+ latHari.innerHTML=
+  `<option value="">Hari</option>`+
+  hariArr.map(h=>`<option>${h}</option>`).join("");
 
- latHari.innerHTML =
-  `<option value="">Hari</option>` +
-  hariArr.map(h=>`<option value="${h}">${h}</option>`).join("");
+ latJam.innerHTML=
+  `<option value="">Jam</option>`+
+  jamArr.map(j=>`<option>${j}</option>`).join("");
 
- latJam.innerHTML =
-  `<option value="">Jam</option>` +
-  jamArr.map(j=>`<option value="${j}">${j}</option>`).join("");
-
- // ================= LOAD DATABASE =================
  try{
 
-  const data = await api("latihan.php");
+  const data=await api("latihan.php");
 
-  latihanList.innerHTML = data.map(r=>`
+  latihanList.innerHTML=data.map(r=>`
    <div class="row">
     ${r.hari} — ${r.jam}
     <b style="color:${r.aktif?'#6cff9c':'#aaa'}">
@@ -546,15 +584,17 @@ async function loadLatihan(){
 
  }catch(err){
 
-  console.error("LATIHAN ERROR:", err);
+  console.error(err);
 
-  latihanList.innerHTML =
+  latihanList.innerHTML=
    `<small style="opacity:.6">Belum ada data latihan</small>`;
  }
 }
 
-/* LOAD */
+/* ================= LOAD ALL ================= */
+
 async function loadAll(){
+
  await loadNames();
  await renderAssign();
  await loadSongs();
@@ -563,6 +603,7 @@ async function loadAll(){
  await loadLatihan();
 }
 </script>
+
 
 </body>
 </html>
